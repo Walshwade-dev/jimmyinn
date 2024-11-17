@@ -1,30 +1,27 @@
-import data from '/data.js'
-
+import data from '/data.js';
 
 const listEl = document.querySelector('.menu-list');
 let menuItemEl = '';
 
-data.forEach( item => {
+data.forEach(item => {
     const listItemHtml = `
         <li id="item-${item.id}" class="menu-item h-[5rem] mb-2 flex items-center justify-between border-t-none border-l-none border-r-none border-b-2 border-slate-300 pb-10 my-10">
             <div class="menu-description flex gap-10">
                 <img class="list-image max-w-[70px]" src="${item.image}" alt="${item.name}">
-                <div class="item-descriptions max-w-70% -ml-8 tracking-wider"">
+                <div class="item-descriptions max-w-70% -ml-8 tracking-wider">
                     <h2 class="item-description-name font-bold">${item.name}</h2>
                     <p class="item-ingredients font-extralight text-xs text-slate-600 my-2">${item.ingredients.join(', ')}</p>
                     <h3 class="item-price font-bold">$${item.price}</h3>
                 </div>
             </div>
-            <button class="add-btn w-[4rem] h-[4rem] border-2 border-slate-300 rounded-full " data-id="${item.id}"><i class="fa-thin fa-plus-large"></i></button>
+            <button class="add-btn w-[4rem] h-[4rem] border-2 border-slate-300 rounded-full" data-id="${item.id}"><i class="fa-thin fa-plus-large"></i></button>
         </li>`;
 
     menuItemEl += listItemHtml;
-    
 });
 
 // Once all items are built, set the innerHTML of the menu list all at once
 listEl.innerHTML = menuItemEl;
-
 
 const addBtns = document.querySelectorAll('.add-btn');
 
@@ -44,3 +41,64 @@ addBtns.forEach(btn => {
         btn.style.border = '2px solid lightgray';  // Reset border to a light gray color
     });
 });
+
+document.addEventListener('click', (e) => {
+    if (e.target && e.target.closest('.add-btn')) {
+        const itemId = e.target.closest('.add-btn').dataset.id;
+
+        // Getting the corresponding item from the data array
+        const item = data.find(item => item.id.toString() === itemId);
+
+        if (item) {
+            let orderList = JSON.parse(localStorage.getItem('orderList')) || [];
+
+            const existingItem = orderList.find(orderItem => orderItem.id === item.id);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                orderList.push({ ...item, quantity: 1 });
+            }
+
+            localStorage.setItem('orderList', JSON.stringify(orderList));
+            updateOrderList(orderList);
+        }
+    }
+});
+
+function updateOrderList(orderList) {
+    let orderListEl = document.querySelector('.order-items-list');
+
+    // Clear the current list
+    orderListEl.innerHTML = '';
+
+    orderList.forEach(item => {
+        const orderListItem = document.createElement('li');
+        orderListItem.classList.add('w-full', 'font-semibold', 'text-lg', 'flex', 'justify-between', 'items-center');
+
+        // Create span elements for the item name, price, and quantity.
+        const itemName = document.createElement('span');
+        itemName.classList.add('item-name');
+        itemName.textContent = item.name;
+
+        const itemPrice = document.createElement('span');
+        itemPrice.classList.add('item-price');
+        itemPrice.textContent = `$${item.price}`;
+
+        const itemQuantity = document.createElement('span');
+        itemQuantity.classList.add('item-quantity');
+        itemQuantity.textContent = `x ${item.quantity}`;
+
+        // Append all elements to the order list item
+        orderListItem.appendChild(itemName);
+        orderListItem.appendChild(itemPrice);
+        orderListItem.appendChild(itemQuantity);
+
+        // Append the item to the list
+        orderListEl.appendChild(orderListItem);
+    });
+}
+
+// Initial update of the order list from localStorage if there are any saved items
+const savedOrderList = JSON.parse(localStorage.getItem('orderList')) || [];
+updateOrderList(savedOrderList);
