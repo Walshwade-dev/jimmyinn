@@ -9,7 +9,7 @@ data.forEach( item => {
         <li id="item-${item.id}" class="menu-item h-[5rem] mb-2 flex items-center justify-between border-t-none border-l-none border-r-none border-b-2 border-slate-300 pb-10 my-10">
             <div class="menu-description flex gap-10">
                 <img class="list-image max-w-[70px]" src="${item.image}" alt="${item.name}">
-                <div class="item-descriptions max-w-70% mx-1 tracking-wider"">
+                <div class="item-descriptions max-w-70% -ml-8 tracking-wider"">
                     <h2 class="item-description-name font-bold">${item.name}</h2>
                     <p class="item-ingredients font-extralight text-xs text-slate-600 my-2">${item.ingredients.join(', ')}</p>
                     <h3 class="item-price font-bold">$${item.price}</h3>

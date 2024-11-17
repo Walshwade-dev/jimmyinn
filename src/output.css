@@ -613,8 +613,38 @@ video {
   margin-bottom: 0.5rem;
 }
 
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.mx-3 {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
+}
+
+.ml-1 {
+  margin-left: 0.25rem;
+}
+
+.-ml-1 {
+  margin-left: -0.25rem;
+}
+
+.-ml-4 {
+  margin-left: -1rem;
+}
+
+.-ml-10 {
+  margin-left: -2.5rem;
+}
+
+.-ml-8 {
+  margin-left: -2rem;
 }
 
 .flex {
@@ -625,8 +655,8 @@ video {
   height: 15vh;
 }
 
-.h-\[2rem\] {
-  height: 2rem;
+.h-\[4rem\] {
+  height: 4rem;
 }
 
 .h-\[55vh\] {
@@ -641,40 +671,8 @@ video {
   height: 90%;
 }
 
-.h-\[rem\] {
-  height: rem;
-}
-
-.h-\[3rem\] {
-  height: 3rem;
-}
-
-.h-\[3\.rem\] {
-  height: 3.rem;
-}
-
-.h-\[3\.5rem\] {
-  height: 3.5rem;
-}
-
-.h-\[4rem\] {
-  height: 4rem;
-}
-
 .max-h-20 {
   max-height: 5rem;
-}
-
-.w-\[2rem\] {
-  width: 2rem;
-}
-
-.w-\[rem\] {
-  width: rem;
-}
-
-.w-\[3rem\] {
-  width: 3rem;
 }
 
 .w-\[4rem\] {
@@ -697,6 +695,10 @@ video {
   max-width: 90%;
 }
 
+.max-w-\[60px\] {
+  max-width: 60px;
+}
+
 .items-center {
   align-items: center;
 }
@@ -713,12 +715,12 @@ video {
   border-radius: 9999px;
 }
 
-.border-2 {
-  border-width: 2px;
-}
-
 .border {
   border-width: 1px;
+}
+
+.border-2 {
+  border-width: 2px;
 }
 
 .border-b-2 {
@@ -728,11 +730,6 @@ video {
 .border-slate-300 {
   --tw-border-opacity: 1;
   border-color: rgb(203 213 225 / var(--tw-border-opacity, 1));
-}
-
-.border-slate-500 {
-  --tw-border-opacity: 1;
-  border-color: rgb(100 116 139 / var(--tw-border-opacity, 1));
 }
 
 .bg-header-bg {
@@ -754,6 +751,16 @@ video {
 .py-10 {
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.py-5 {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
 }
 
 .pb-10 {
@@ -782,6 +789,11 @@ video {
   line-height: 1rem;
 }
 
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -802,19 +814,14 @@ video {
   letter-spacing: 0.05em;
 }
 
-.text-slate-500 {
+.text-slate-600 {
   --tw-text-opacity: 1;
-  color: rgb(100 116 139 / var(--tw-text-opacity, 1));
+  color: rgb(71 85 105 / var(--tw-text-opacity, 1));
 }
 
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
-}
-
-.text-slate-600 {
-  --tw-text-opacity: 1;
-  color: rgb(71 85 105 / var(--tw-text-opacity, 1));
 }
 
 body {
@@ -826,4 +833,20 @@ body {
   max-width: 368px;
   max-height: 100vh;
   margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .md\:mx-4 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .md\:py-10 {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .md\:font-semibold {
+    font-weight: 600;
+  }
 }
