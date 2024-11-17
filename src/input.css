@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    font-family: "Smythe", system-ui;
+    font-style: normal;
+}
+
+
+.container {
+    max-width: 368px;
+    max-height: 100vh;
+    margin: 0 auto;
+}
