@@ -62,6 +62,7 @@ document.addEventListener('click', (e) => {
 
             localStorage.setItem('orderList', JSON.stringify(orderList));
             updateOrderList(orderList);
+            totalPrice(orderList);  // Update the total price when the order list changes
         }
     }
 });
@@ -74,11 +75,11 @@ function updateOrderList(orderList) {
 
     orderList.forEach(item => {
         const orderListItem = document.createElement('li');
-        orderListItem.classList.add('w-full', 'font-semibold', 'text-lg', 'flex', 'justify-between', 'items-center');
+        orderListItem.classList.add('w-full', 'font-semibold', 'text-lg', 'flex', 'justify-between', 'items-center', 'grid', 'grid-cols-6', 'gap-2');
 
         // Create span elements for the item name, price, and quantity.
         const itemName = document.createElement('span');
-        itemName.classList.add('item-name');
+        itemName.classList.add('item-name', 'col-span-1');
         itemName.textContent = item.name;
 
         const itemPrice = document.createElement('span');
@@ -89,16 +90,55 @@ function updateOrderList(orderList) {
         itemQuantity.classList.add('item-quantity');
         itemQuantity.textContent = `x ${item.quantity}`;
 
+        // Create a remove button
+        const removeBtn = document.createElement('button');
+        removeBtn.classList.add('remove-btn', 'text-slate-600', 'font-semibold', 'text-xs', 'col-span-3', 'tracking-wider', 'pointer');
+        removeBtn.textContent = 'Remove';
+        removeBtn.dataset.id = item.id;
+
         // Append all elements to the order list item
         orderListItem.appendChild(itemName);
+        orderListItem.appendChild(removeBtn);
         orderListItem.appendChild(itemPrice);
         orderListItem.appendChild(itemQuantity);
 
         // Append the item to the list
         orderListEl.appendChild(orderListItem);
     });
+
+    // Add event listeners to the remove buttons (this ensures dynamic buttons get listeners)
+    const removeBtns = document.querySelectorAll('.remove-btn');
+    removeBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const itemId = e.target.dataset.id;
+
+            // Get the current order list from localStorage
+            let orderList = JSON.parse(localStorage.getItem('orderList')) || [];
+
+            // Remove the item with the matching id
+            orderList = orderList.filter(item => item.id !== parseInt(itemId));
+
+            // Save the updated order list back to localStorage
+            localStorage.setItem('orderList', JSON.stringify(orderList));
+
+            // Update the UI and the total price
+            updateOrderList(orderList);
+            totalPrice(orderList);
+        });
+    });
 }
 
 // Initial update of the order list from localStorage if there are any saved items
 const savedOrderList = JSON.parse(localStorage.getItem('orderList')) || [];
 updateOrderList(savedOrderList);
+totalPrice(savedOrderList);  // Also update the total price initially
+
+function totalPrice(orderList) {
+    let totalPriceEl = document.querySelector('.total-price');
+
+    totalPriceEl.innerHTML = '';
+
+    let total = orderList.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+
+    totalPriceEl.innerHTML = `$${total.toFixed(2)}`;
+}
