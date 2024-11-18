@@ -14,7 +14,9 @@ data.forEach(item => {
                     <h3 class="item-price font-bold">$${item.price}</h3>
                 </div>
             </div>
-            <button class="add-btn w-[4rem] h-[4rem] border-2 border-slate-300 rounded-full" data-id="${item.id}"><i class="fa-thin fa-plus-large"></i></button>
+            <button class="add-btn w-[4rem] h-[4rem] border-2 border-slate-300 rounded-full" data-id="${item.id}">
+                <i class="fa-thin fa-plus-large"></i>
+            </button>
         </li>`;
 
     menuItemEl += listItemHtml;
@@ -39,6 +41,13 @@ addBtns.forEach(btn => {
         btn.style.backgroundColor = '';  // Reset background color when mouse leaves the button
         btn.style.color = 'black';  // Reset text color to black
         btn.style.border = '2px solid lightgray';  // Reset border to a light gray color
+    });
+
+    btn.addEventListener('click', () => {
+        let orderSecEl = document.querySelector('.order-section');
+        if(orderSecEl.classList.contains('hidden')){
+            orderSecEl.classList.remove('hidden');
+        }
     });
 });
 
@@ -69,6 +78,7 @@ document.addEventListener('click', (e) => {
 
 function updateOrderList(orderList) {
     let orderListEl = document.querySelector('.order-items-list');
+    let orderSecEl = document.querySelector('.order-section');
 
     // Clear the current list
     orderListEl.innerHTML = '';
@@ -126,6 +136,11 @@ function updateOrderList(orderList) {
             totalPrice(orderList);
         });
     });
+
+    // Hide order section if no items in the list
+    if (orderListEl.children.length === 0 && !orderSecEl.classList.contains('hidden')) {
+        orderSecEl.classList.add('hidden');
+    }
 }
 
 // Initial update of the order list from localStorage if there are any saved items
