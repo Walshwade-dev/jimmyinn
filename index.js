@@ -85,11 +85,15 @@ function updateOrderList(orderList) {
 
     orderList.forEach(item => {
         const orderListItem = document.createElement('li');
-        orderListItem.classList.add('w-full', 'font-semibold', 'text-lg', 'flex', 'justify-between', 'items-center', 'grid', 'grid-cols-6', 'gap-2');
+        orderListItem.classList.add('relative','w-full', 'font-semibold', 'text-lg', 'flex','items-center', 'justify-between', 'grid', 'grid-cols-6', 'gap-[2px]', 'text-right');
 
         // Create span elements for the item name, price, and quantity.
+        const nameSpan = document.createElement('span');
+        nameSpan.classList.add('static', 'col-span-4', 'text-left', 'flex', 'align-center', 'gap-[5px]');
+
+
         const itemName = document.createElement('span');
-        itemName.classList.add('item-name', 'col-span-1');
+        itemName.classList.add('item-name', 'static');
         itemName.textContent = item.name;
 
         const itemPrice = document.createElement('span');
@@ -102,13 +106,15 @@ function updateOrderList(orderList) {
 
         // Create a remove button
         const removeBtn = document.createElement('button');
-        removeBtn.classList.add('remove-btn', 'text-slate-600', 'font-semibold', 'text-xs', 'col-span-3', 'tracking-wider', 'pointer');
+        removeBtn.classList.add('inline-block', 'remove-btn', 'text-slate-500', 'font-mono', 'text-xs', 'tracking-wider', 'pointer');
         removeBtn.textContent = 'Remove';
         removeBtn.dataset.id = item.id;
 
+        nameSpan.appendChild(itemName);
+        nameSpan.appendChild(removeBtn);
+
         // Append all elements to the order list item
-        orderListItem.appendChild(itemName);
-        orderListItem.appendChild(removeBtn);
+        orderListItem.appendChild(nameSpan);
         orderListItem.appendChild(itemPrice);
         orderListItem.appendChild(itemQuantity);
 
