@@ -2,6 +2,14 @@
 
 import data from '/data.js';
 
+
+const closeModalBtn = document.querySelector('.close-btn')
+closeModalBtn.addEventListener('click', () => {
+    if(!paymentModalEl.classList.contains('hidden')){
+        paymentModalEl.classList.add('hidden');
+    }
+})
+
 const listEl = document.querySelector('.menu-list');
 let menuItemEl = '';
 
@@ -64,21 +72,50 @@ function updateOrderList(orderList) {
 
   orderList.forEach(item => {
     const orderListItem = document.createElement('li');
-    orderListItem.classList.add('order-item', 'flex', 'justify-between', 'mb-2');
+    orderListItem.classList.add('order-item', 'grid', 'grid-cols-6', 'gap-1', 'mb-2');
 
     const itemName = document.createElement('span');
+    itemName.classList.add('text-left');
     itemName.textContent = item.name;
 
+    // Remove Button
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = 'remove';
+    removeBtn.classList.add('remove-btn', 'text-red-500', 'font-bold', 'text-sm');
+    removeBtn.addEventListener('click', () => removeItem(item.id));
+
+
+    const itemNameContainer = document.createElement('span');
+    itemNameContainer.classList.add('col-span-4', 'flex', 'gap-2');
+    itemNameContainer.append(itemName, removeBtn);
+
     const itemQuantity = document.createElement('span');
+    itemQuantity.classList.add('text-right')
     itemQuantity.textContent = `x ${item.quantity}`;
 
     const itemPrice = document.createElement('span');
+    itemPrice.classList.add('text-right')
     itemPrice.textContent = `$${(item.price * item.quantity).toFixed(2)}`;
 
-    orderListItem.append(itemName, itemQuantity, itemPrice);
+    orderListItem.append(itemNameContainer, itemQuantity, itemPrice);
     orderListEl.appendChild(orderListItem);
   });
 }
+
+
+// Remove an item from the order
+function removeItem(itemId) {
+    let orderList = JSON.parse(localStorage.getItem('orderList')) || [];
+    orderList = orderList.filter(item => item.id !== itemId); // Remove item by ID
+    localStorage.setItem('orderList', JSON.stringify(orderList));
+    updateOrderList(orderList); // Update UI
+    totalPrice(orderList); // Update total price
+  
+    // Hide order section if no items left
+    if (orderList.length === 0) {
+      orderSecEl.classList.add('hidden');
+    }
+  }
 
 // Calculate and display the total price
 function totalPrice(orderList) {
@@ -113,6 +150,21 @@ paymentModalEl.querySelector('form').addEventListener('submit', (event) => {
   // Hide the payment modal
   paymentModalEl.classList.add('hidden');
 
-  // Clear order from localStorage
+  //clear order from localStorage 
   localStorage.removeItem('orderList');
+
+   // Optionally reset the UI to show the menu again
+   setTimeout(() => {
+    orderSecEl.classList.add('hidden'); // Hide the order section
+    location.reload(); // Reload the page to reset the menu and order
+  }, 3000); // Reset the page after 2 seconds (or choose another delay)
+});
+
+
+// Initialize order list if already exists in localStorage
+document.addEventListener('DOMContentLoaded', () => {
+    orderSecEl.classList.add('hidden');
+    const orderList = JSON.parse(localStorage.getItem('orderList')) || [];
+    updateOrderList(orderList);
+    totalPrice(orderList);  
 });
