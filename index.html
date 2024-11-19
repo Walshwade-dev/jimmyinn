@@ -34,6 +34,25 @@
   </header>
 
   <main class="container h-[70vh] md:h-[50vh] mb-10">
+
+    <!-- ====> Payment Modal <==== -->
+    <div class="hidden payment-modal rounded-md absolute w-[310px] h-[40vh] mx-auto left-1 top-[25%] md:h-[30vh] md:left-[42%] md:top-[20%] bg-white opacity-95 drop-shadow-4xl">
+      <h2 class="text-center font-semibold tracking-wider py-3">Enter card details</h2>
+      <form class="relative h-[80%] w-[95%] mx-auto">
+
+        <div class="flex flex-col">
+          <input type="text" placeholder="Enter your name" class="name-input indent-4 rounded-md border-[2px] border-slate-500 py-2 my-1" required />
+          <input type="number" placeholder="Enter card number" class="card-no indent-4 rounded-md border-[2px] border-slate-500 py-2 my-1" required />
+          <input type="text" placeholder="Enter cvv" class="card-cvv indent-4 rounded-md border-[2px] border-slate-500 py-2 my-1" required />
+        </div>
+
+        <button type="submit" class="absolute bottom-0 pay-btn w-full container bg-[#16DB99] hover:bg-[#1e664c] text-white h-10 text-xl font-semibold cursor-pointer mb-8 ">Pay</button>
+      </form>
+    </div>
+     <!-- ====> Payment Modal <==== -->
+
+
+
     <section class="menu-section max-w-[90%] mx-auto pt-2 h-[80%]">
       <ul class="menu-list">
         <!-- list item here-->
@@ -41,18 +60,19 @@
     </section>
 
     <!-- ====> order section <====  -->
-    <section class="container order-section h-auto w-[90%] mx-auto pt-2 ">
+    <section class="container order-section h-auto w-[90%] mx-auto pt-2 hidden">
       <h3 class="text-center max-w-[100%] mx-auto pb-2 text-lg font-semibold px-4 ">Your order</h3>
       <ul class="bg-slate-50  max-w-[100%] mx-auto order-items-list ">
 
       </ul>
       <ul class="border-l-0 border-r-0 border-t-[2px] border-b-0 border-slate-500 w-full h-auto grid grid-cols-6">
         <li class="font-bold text-xl tracking-wider col-span-5">Total price:</li>
-        <li class="total-price font-semibold text-xl tracking-wider">
-          <!-- total price of all items here--> 
+        <li class="total-price font-semibold text-xl tracking-wider text-right">
+          <!-- total price of all items here-->
+          0.00
         </li>
       </ul>
-      <button class="w-full container bg-[#16DB99] text-white h-10 text-xl font-semibold cursor-pointer mb-8">Complete order</button>
+      <button class="complete-order-btn w-full container bg-[#16DB99] hover:bg-[#1e664c] text-white h-10 text-xl font-semibold cursor-pointer mb-8">Complete order</button>
     </section>
 
   </main>

@@ -1,165 +1,118 @@
+// JavaScript (index.js)
+
 import data from '/data.js';
 
 const listEl = document.querySelector('.menu-list');
 let menuItemEl = '';
 
+// Dynamically create menu items
 data.forEach(item => {
-    const listItemHtml = `
-        <li id="item-${item.id}" class="menu-item h-[5rem] mb-2 flex items-center justify-between border-t-none border-l-none border-r-none border-b-2 border-slate-300 pb-10 my-10">
-            <div class="menu-description flex gap-10">
-                <img class="list-image max-w-[70px]" src="${item.image}" alt="${item.name}">
-                <div class="item-descriptions max-w-70% -ml-8 tracking-wider">
-                    <h2 class="item-description-name font-bold">${item.name}</h2>
-                    <p class="item-ingredients font-extralight text-xs text-slate-600 my-2">${item.ingredients.join(', ')}</p>
-                    <h3 class="item-price font-bold">$${item.price}</h3>
-                </div>
-            </div>
-            <button class="add-btn w-[4rem] h-[4rem] border-2 border-slate-300 rounded-full" data-id="${item.id}">
-                <i class="fa-thin fa-plus-large"></i>
-            </button>
-        </li>`;
-
-    menuItemEl += listItemHtml;
+  const listItemHtml = `
+    <li id="item-${item.id}" class="menu-item h-[5rem] mb-2 flex items-center justify-between border-t-none border-l-none border-r-none border-b-2 border-slate-300 pb-10 my-10">
+      <div class="menu-description flex gap-10">
+        <img class="list-image max-w-[70px]" src="${item.image}" alt="${item.name}">
+        <div class="item-descriptions max-w-70% -ml-8 tracking-wider">
+          <h2 class="item-description-name font-bold">${item.name}</h2>
+          <p class="item-ingredients font-extralight text-xs text-slate-600 my-2">${item.ingredients.join(', ')}</p>
+          <h3 class="item-price font-bold">$${item.price}</h3>
+        </div>
+      </div>
+      <button class="add-btn w-[4rem] h-[4rem] border-2 border-slate-300 rounded-full" data-id="${item.id}">
+        <i class="fa-thin fa-plus-large"></i>
+      </button>
+    </li>`;
+  
+  menuItemEl += listItemHtml;
 });
 
-// Once all items are built, set the innerHTML of the menu list all at once
+// Add the items to the menu
 listEl.innerHTML = menuItemEl;
 
 const addBtns = document.querySelectorAll('.add-btn');
+const orderSecEl = document.querySelector('.order-section');
+const orderListEl = document.querySelector('.order-items-list');
 
-// Style all buttons
+// Handle adding items to the order
 addBtns.forEach(btn => {
-    // Add event listener for mouseover
-    btn.addEventListener('mouseover', () => {
-        btn.style.backgroundColor = 'gray';  // Change background color to gray on hover
-        btn.style.color = '#fff';  // Change text color to white
-        btn.style.border = 'none';  // Remove the border
-    });
+  btn.addEventListener('click', (e) => {
+    const itemId = e.target.closest('.add-btn').dataset.id;
+    const item = data.find(item => item.id.toString() === itemId);
+    let orderList = JSON.parse(localStorage.getItem('orderList')) || [];
 
-    // Add event listener for mouseout to reset the background color
-    btn.addEventListener('mouseout', () => {
-        btn.style.backgroundColor = '';  // Reset background color when mouse leaves the button
-        btn.style.color = 'black';  // Reset text color to black
-        btn.style.border = '2px solid lightgray';  // Reset border to a light gray color
-    });
+    const existingItem = orderList.find(orderItem => orderItem.id === item.id);
 
-    btn.addEventListener('click', () => {
-        let orderSecEl = document.querySelector('.order-section');
-        if(orderSecEl.classList.contains('hidden')){
-            orderSecEl.classList.remove('hidden');
-        }
-    });
-});
-
-document.addEventListener('click', (e) => {
-    if (e.target && e.target.closest('.add-btn')) {
-        const itemId = e.target.closest('.add-btn').dataset.id;
-
-        // Getting the corresponding item from the data array
-        const item = data.find(item => item.id.toString() === itemId);
-
-        if (item) {
-            let orderList = JSON.parse(localStorage.getItem('orderList')) || [];
-
-            const existingItem = orderList.find(orderItem => orderItem.id === item.id);
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                orderList.push({ ...item, quantity: 1 });
-            }
-
-            localStorage.setItem('orderList', JSON.stringify(orderList));
-            updateOrderList(orderList);
-            totalPrice(orderList);  // Update the total price when the order list changes
-        }
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      orderList.push({ ...item, quantity: 1 });
     }
+
+    localStorage.setItem('orderList', JSON.stringify(orderList));
+    updateOrderList(orderList);
+    totalPrice(orderList);
+
+    // Show order section if items are added
+    if (orderList.length > 0) {
+      orderSecEl.classList.remove('hidden');
+    }
+  });
 });
 
+// Update the order list in the UI
 function updateOrderList(orderList) {
-    let orderListEl = document.querySelector('.order-items-list');
-    let orderSecEl = document.querySelector('.order-section');
+  orderListEl.innerHTML = '';
 
-    // Clear the current list
-    orderListEl.innerHTML = '';
+  orderList.forEach(item => {
+    const orderListItem = document.createElement('li');
+    orderListItem.classList.add('order-item', 'flex', 'justify-between', 'mb-2');
 
-    orderList.forEach(item => {
-        const orderListItem = document.createElement('li');
-        orderListItem.classList.add('relative','w-full', 'font-semibold', 'text-lg', 'flex','items-center', 'justify-between', 'grid', 'grid-cols-6', 'gap-[2px]', 'text-right');
+    const itemName = document.createElement('span');
+    itemName.textContent = item.name;
 
-        // Create span elements for the item name, price, and quantity.
-        const nameSpan = document.createElement('span');
-        nameSpan.classList.add('static', 'col-span-4', 'text-left', 'flex', 'align-center', 'gap-[5px]');
+    const itemQuantity = document.createElement('span');
+    itemQuantity.textContent = `x ${item.quantity}`;
 
+    const itemPrice = document.createElement('span');
+    itemPrice.textContent = `$${(item.price * item.quantity).toFixed(2)}`;
 
-        const itemName = document.createElement('span');
-        itemName.classList.add('item-name', 'static');
-        itemName.textContent = item.name;
-
-        const itemPrice = document.createElement('span');
-        itemPrice.classList.add('item-price');
-        itemPrice.textContent = `$${item.price}`;
-
-        const itemQuantity = document.createElement('span');
-        itemQuantity.classList.add('item-quantity');
-        itemQuantity.textContent = `x ${item.quantity}`;
-
-        // Create a remove button
-        const removeBtn = document.createElement('button');
-        removeBtn.classList.add('inline-block', 'remove-btn', 'text-slate-500', 'font-mono', 'text-xs', 'tracking-wider', 'pointer');
-        removeBtn.textContent = 'Remove';
-        removeBtn.dataset.id = item.id;
-
-        nameSpan.appendChild(itemName);
-        nameSpan.appendChild(removeBtn);
-
-        // Append all elements to the order list item
-        orderListItem.appendChild(nameSpan);
-        orderListItem.appendChild(itemPrice);
-        orderListItem.appendChild(itemQuantity);
-
-        // Append the item to the list
-        orderListEl.appendChild(orderListItem);
-    });
-
-    // Add event listeners to the remove buttons (this ensures dynamic buttons get listeners)
-    const removeBtns = document.querySelectorAll('.remove-btn');
-    removeBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const itemId = e.target.dataset.id;
-
-            // Get the current order list from localStorage
-            let orderList = JSON.parse(localStorage.getItem('orderList')) || [];
-
-            // Remove the item with the matching id
-            orderList = orderList.filter(item => item.id !== parseInt(itemId));
-
-            // Save the updated order list back to localStorage
-            localStorage.setItem('orderList', JSON.stringify(orderList));
-
-            // Update the UI and the total price
-            updateOrderList(orderList);
-            totalPrice(orderList);
-        });
-    });
-
-    // Hide order section if no items in the list
-    if (orderListEl.children.length === 0 && !orderSecEl.classList.contains('hidden')) {
-        orderSecEl.classList.add('hidden');
-    }
+    orderListItem.append(itemName, itemQuantity, itemPrice);
+    orderListEl.appendChild(orderListItem);
+  });
 }
 
-// Initial update of the order list from localStorage if there are any saved items
-const savedOrderList = JSON.parse(localStorage.getItem('orderList')) || [];
-updateOrderList(savedOrderList);
-totalPrice(savedOrderList);  // Also update the total price initially
-
+// Calculate and display the total price
 function totalPrice(orderList) {
-    let totalPriceEl = document.querySelector('.total-price');
-
-    totalPriceEl.innerHTML = '';
-
-    let total = orderList.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-
-    totalPriceEl.innerHTML = `$${total.toFixed(2)}`;
+  const totalPriceEl = document.querySelector('.total-price');
+  const total = orderList.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+  totalPriceEl.textContent = `$${total.toFixed(2)}`;
 }
+
+// Complete Order
+const completeOrderBtn = document.querySelector('.complete-order-btn');
+const paymentModalEl = document.querySelector('.payment-modal');
+
+completeOrderBtn.addEventListener('click', () => {
+  if (paymentModalEl.classList.contains('hidden')) {
+    paymentModalEl.classList.remove('hidden');
+  }
+});
+
+// Handle Payment Modal Form Submission
+paymentModalEl.querySelector('form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const name = document.querySelector('.name-input').value;
+
+  // Show a success message in the order section
+  const paymentNotification = `
+    <div class="bg-[#ECFDF5] text-[#056f46] p-4 rounded">
+      <p>Thanks, ${name}! Your order is on its way!</p>
+    </div>
+  `;
+  orderSecEl.innerHTML = paymentNotification;
+
+  // Hide the payment modal
+  paymentModalEl.classList.add('hidden');
+
+  // Clear order from localStorage
+  localStorage.removeItem('orderList');
+});
